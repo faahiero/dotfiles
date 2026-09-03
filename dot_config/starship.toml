@@ -18,6 +18,7 @@ $nodejs\
 $ruby\
 $golang\
 $swift\
+$dotnet\
 $cmd_duration\
 $time"""
 
@@ -51,51 +52,49 @@ renamed = "»"
 deleted = "✘"
 
 [package]
-symbol = "📦 "
-style = "bold 208"
-format = "is [$symbol$version]($style)"
+symbol = "󰏗 "
+format = "is [$symbol](bold #F08428)[($version )](bold white)"
 
 [rust]
-symbol = "🦀 "
-style = "bold red"
-format = "via [$symbol$version]($style)"
+symbol = " "
+format = "via [$symbol](bold #DEA584)[($version )](bold white)"
 detect_extensions = []
 detect_files = ["Cargo.toml", ".rust-version"]
 
 [python]
-symbol = "🐍 "
-style = "bold yellow"
-format = 'via [${symbol}${version}]($style)'
+symbol = " "
+format = "via [$symbol](bold #FFD43B)[(${version} )](bold white)"
 detect_extensions = []
 detect_files = ["requirements.txt", "pyproject.toml", "Pipfile", "setup.py", ".python-version", "tox.ini"]
 
 [nodejs]
 symbol = " "
-style = "bold green"
-format = "via [$symbol($version )]($style)"
+format = "via [$symbol](bold #539E43)[($version )](bold white)"
 detect_extensions = []
 detect_files = [".node-version", ".nvmrc"]
 
 [ruby]
-symbol = "💎 "
-style = "bold red"
-format = "via [$symbol($version )]($style)"
+symbol = " "
+format = "via [$symbol](bold #CC342D)[($version )](bold white)"
 detect_extensions = []
 detect_files = ["Gemfile", ".ruby-version"]
 
 [golang]
 symbol = " "
-style = "bold cyan"
-format = "via [$symbol($version )]($style)"
+format = "via [$symbol](bold #00ADD8)[($version )](bold white)"
 detect_extensions = []
 detect_files = ["go.mod", "go.sum", ".go-version"]
 
 [swift]
 symbol = "󰛥 "
-style = "bold 202"
-format = "via [$symbol($version )]($style)"
+format = "via [$symbol](bold #F05138)[($version )](bold white)"
 detect_extensions = ["swift"]
 detect_files = ["Package.swift"]
+
+[dotnet]
+symbol = " "
+format = "via [$symbol](bold #512BD4)[($version )(🎯 $tfm )](bold white)"
+detect_extensions = ["csproj", "fsproj", "xproj", "sln", "slnx"]
 
 [cmd_duration]
 min_time = 500
