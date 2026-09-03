@@ -335,19 +335,21 @@ Guia definitivo com **todos** os atalhos de teclado, aliases manuais, comandos d
 
 ---
 
-## 🍏 12. Guia de Instalação e Provisionamento no macOS (Passo a Passo)
+## 🍏 12. Gestão com Chezmoi & Provisionamento no macOS
 
-Para replicar exatamente este ambiente em um Mac novo:
+Os seus dotfiles estão versionados no repositório: **[`faahiero/dotfiles`](https://github.com/faahiero/dotfiles)**.
 
-### Passo 1: Instalar Homebrew e Ferramentas CLI
+### 🚀 Provisionamento no Mac Novo (Passo a Passo)
+
+#### Passo 1: Instalar Homebrew, CLIs e Chezmoi
 Abra o Terminal padrão do Mac e execute:
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 eval "$(/opt/homebrew/bin/brew shellenv)"
-brew install eza bat ripgrep fd fzf zoxide mise starship neovim lazygit ghostty
+brew install eza bat ripgrep fd fzf zoxide mise starship neovim lazygit ghostty chezmoi
 ```
 
-### Passo 2: Instalar Oh My Zsh e Plugins Customizados
+#### Passo 2: Instalar Oh My Zsh e Plugins Customizados
 ```bash
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
@@ -357,15 +359,27 @@ git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM
 git clone https://github.com/MichaelAquilina/zsh-you-should-use.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/you-should-use
 ```
 
-### Passo 3: Copiar os 4 Arquivos de Configuração
-Copie do seu Linux ou repositório de dotfiles:
-* `~/.zshrc` ➔ `~/.zshrc`
-* `~/.config/ghostty/config` ➔ `~/.config/ghostty/config`
-* `~/.config/starship.toml` ➔ `~/.config/starship.toml`
-* `~/.config/mise/config.toml` ➔ `~/.config/mise/config.toml`
+#### Passo 3: Aplicar as Configurações via Chezmoi (Automático)
+```bash
+chezmoi init --apply faahiero
+```
+*(O Chezmoi clona automaticamente o seu repositório `faahiero/dotfiles` e aplica `.zshrc`, `ghostty`, `starship`, `mise` e `CHEATSHEET_ZSH.md` no lugar certo).*
 
-### Passo 4: Instalar ferramentas do Mise no Mac
+#### Passo 4: Instalar ferramentas do Mise no Mac
 ```bash
 mise install
 ```
-Pronto! Ao abrir o Ghostty, seu Mac terá exatamente o mesmo visual, velocidade e atalhos do Linux!
+
+---
+
+### 🔄 Comandos Chezmoi para o Dia a Dia (Sincronização)
+
+| Comando | O que faz |
+| :--- | :--- |
+| `chezmoi status` | Mostra se há diferenças entre seus arquivos no `$HOME` e o repositório |
+| `chezmoi diff` | Exibe o `diff` exato das alterações pendentes |
+| `chezmoi re-add` | Atualiza o repositório com as modificações que você fez nos arquivos locais |
+| `chezmoi add <arquivo>` | Adiciona um novo arquivo de configuração ao monitoramento do Chezmoi |
+| `chezmoi git commit -m "msg"` | Cria um commit no repositório de dotfiles |
+| `chezmoi git push` | Envia as alterações para o GitHub (`faahiero/dotfiles`) |
+| `chezmoi update` | Puxa as novidades do GitHub e aplica imediatamente no sistema |
