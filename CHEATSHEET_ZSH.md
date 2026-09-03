@@ -151,38 +151,58 @@ Guia definitivo com **todos** os atalhos de teclado, aliases manuais, comandos d
 
 ### 🍺 Homebrew (Plugin `brew`)
 
-| Alias | Comando Real | Descrição |
+| Alias / Função | Comando Real | Descrição |
 | :--- | :--- | :--- |
-| `bin <pkg>` | `brew install <pkg>` | Instala uma fórmula ou CLI via Homebrew |
-| `bcas <app>` | `brew install --cask <app>` | Instala aplicativo gráfico no macOS (Ghostty, Cursor, etc.) |
-| `bug` | `brew upgrade` | Atualiza todos os pacotes e casks instalados |
-| `bup` | `brew update` | Atualiza a lista de fórmulas do Homebrew |
-| `bout` | `brew outdated` | Lista pacotes que possuem atualizações disponíveis |
-| `brm <pkg>` | `brew uninstall <pkg>` | Remove um pacote ou aplicativo |
-| `bcl` | `brew cleanup` | Limpa caches e downloads antigos do Homebrew |
-| `bsr <termo>` | `brew search <termo>` | Busca pacotes e casks no repositório |
-| `binf <pkg>` | `brew info <pkg>` | Exibe detalhes, dependências e status do pacote |
-| `bls` | `brew list` | Lista todos os pacotes e casks instalados |
-| `bdoc` | `brew doctor` | Diagnóstica e verifica a saúde da instalação do Homebrew |
-| `bsvc` | `brew services` | Gerencia daemons/serviços em segundo plano |
-| `bsvcl` | `brew services list` | Lista status de todos os serviços (Postgres, Redis, etc.) |
-| `bsvcst <svc>` | `brew services start <svc>` | Inicia um serviço em segundo plano |
-| `bsvcsp <svc>` | `brew services stop <svc>` | Para um serviço em segundo plano |
-| `bsvcr <svc>` | `brew services restart <svc>` | Reinicia um serviço em segundo plano |
+| `bi <pkg>` | `brew install <pkg>` | Instala uma fórmula ou CLI |
+| `bcin <cask>` | `brew install --cask <cask>` | Instala aplicativo gráfico no macOS (Ghostty, Cursor, etc.) |
+| `bcrin <cask>` | `brew reinstall --cask <cask>` | Reinstala um aplicativo gráfico |
+| `bih <pkg>` | `brew install --HEAD <pkg>` | Instala a versão de desenvolvimento mais recente (HEAD) |
+| `bu` | `brew update` | Atualiza a lista de fórmulas e casks do Homebrew |
+| `bup` | `brew upgrade` | Atualiza todas as fórmulas/CLIs instaladas |
+| `bcup` | `brew upgrade --cask` | Atualiza todos os aplicativos gráficos instalados |
+| `bubu` | `brew update && brew outdated && brew upgrade` | Atualiza a lista e faz upgrade de tudo em sequência |
+| `bcubc` | `brew upgrade --cask && brew cleanup` | Atualiza casks e limpa arquivos de download antigos |
+| `bo` | `brew outdated` | Lista fórmulas que possuem atualização disponível |
+| `bco` | `brew outdated --cask` | Lista aplicativos gráficos com atualizações |
+| `bl` | `brew list` | Lista todas as fórmulas/CLIs instaladas |
+| `bcl` | `brew list --cask` | Lista todos os aplicativos gráficos instalados |
+| `bs <termo>` | `brew search <termo>` | Busca fórmulas e aplicativos por nome |
+| `bci <cask>` | `brew info --cask <cask>` | Exibe informações detalhadas de um aplicativo gráfico |
+| `bcn` | `brew cleanup` | Limpa caches, arquivos `.pkg` e downloads antigos |
+| `ba` | `brew autoremove` | Remove dependências órfãs que não são mais necessárias |
+| `br <pkg>` | `brew reinstall <pkg>` | Reinstala uma fórmula/CLI |
+| `buz <pkg>` | `brew uninstall --zap <pkg>` | Desinstala app gráfico apagando todas as configurações e dados |
+| `bdr` | `brew doctor` | Diagnostica problemas e verifica a saúde do Homebrew |
+| `bcfg` | `brew config` | Exibe a configuração detalhada do ambiente do Homebrew |
+| `brewp <pkg>` | `brew pin <pkg>` | Trava um pacote para não ser atualizado no `upgrade` |
+| `brewsp` | `brew list --pinned` | Lista todos os pacotes travados |
+| `brews` | *(função)* | Exibe resumo visual de todas as fórmulas e casks com dependências |
+| `bsl` | `brew services list` | Lista o status de todos os daemons/serviços em background |
+| `bson <svc>` | `brew services start <svc>` | Inicia um serviço em segundo plano (Postgres, Redis, etc.) |
+| `bsona` | `brew services start --all` | Inicia todos os serviços configurados |
+| `bsoff <svc>` | `brew services stop <svc>` | Para um serviço em segundo plano |
+| `bsoffa` | `brew services stop --all` | Para todos os serviços em segundo plano |
+| `bsr <svc>` | `brew services run <svc>` | Executa um serviço em primeiro plano (foreground) |
 
 ### 🍏 Integrações Nativas macOS (Plugin `macos`)
 
 | Comando / Função | Descrição |
 | :--- | :--- |
+| `ofd [pasta]` | Abre a pasta atual (ou especificada) diretamente no **Finder** |
 | `cdf` | Faz `cd` imediato para a **pasta que estiver atualmente aberta no Finder** |
-| `quick-look <arq>` *(ou `ql`)* | Abre o visualizador **Quick Look** nativo do macOS para qualquer arquivo |
 | `pfd` | Imprime o caminho absoluto da pasta atualmente aberta no Finder |
-| `pfs` | Imprime a lista de arquivos atualmente selecionados no Finder |
-| `pushdf` | Adiciona o diretório ativo do Finder na pilha de navegação |
+| `pfs` | Imprime o caminho de todos os arquivos atualmente selecionados no Finder |
+| `pushdf` | Adiciona o diretório ativo do Finder na pilha de navegação (`pushd`) |
+| `quick-look <arq>` *(ou `ql`)* | Abre o visualizador **Quick Look** nativo da Apple para qualquer arquivo |
+| `man-preview <cmd>` | Abre a página man formatada em PDF direto no app **Preview** da Apple |
 | `trash <arq/pasta>` | Move arquivos/pastas com segurança para a **Lixeira do macOS** |
 | `showfiles` / `hidefiles` | Mostra ou oculta arquivos invisíveis no Finder |
-| `music` *(ou `itunes`)* | Controla o Apple Music/Spotify pelo terminal (`music play`, `pause`, `next`, `prev`) |
-| `bspd` / `bspc` | Exibe ou altera o volume do som do Mac pelo terminal |
+| `rmdsstore` | Remove recursivamente todos os arquivos chatos `.DS_Store` do diretório |
+| `freespace <disco>` | Limpa com segurança espaço purgavél no disco usando `diskutil` |
+| `btrestart` | Reinicia o driver de Bluetooth do Mac quando houver falhas |
+| `pxd` / `cdx` | Descobre o workspace aberto no **Xcode** e faz `cd` direto para o projeto |
+| `music <cmd>` | Controla o Apple Music pelo terminal (`play`, `pause`, `next`, `prev`) |
+| `spotify <cmd>` | Controla o Spotify no Mac pelo terminal (`play`, `pause`, `next`, `prev`) |
 
 ---
 
