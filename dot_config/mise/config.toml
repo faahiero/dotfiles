@@ -1,0 +1,8 @@
+[settings.ruby]
+compile = false
+
+[tools]
+chezmoi = "latest"
+node = "lts"
+ruby = "latest"
+usage = "latest"

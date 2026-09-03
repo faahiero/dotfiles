@@ -1,0 +1,337 @@
+# ==============================================================================
+# Oh My Zsh Configuration
+# ==============================================================================
+export ZSH="$HOME/.oh-my-zsh"
+
+# Disable OMZ default theme so Starship handles the prompt
+ZSH_THEME=""
+
+# OMZ Performance & Cache
+ZSH_DISABLE_COMPFIX="true"
+export ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump"
+
+# Autosuggestions Performance (prevents lag on pastes)
+export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+export ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+
+# OMZ Settings
+CASE_SENSITIVE="false"
+HYPHEN_INSENSITIVE="true"
+zstyle ':omz:update' mode reminder
+ENABLE_CORRECTION="false"
+COMPLETION_WAITING_DOTS="true"
+
+# ==============================================================================
+# Platform Detection (macOS vs Linux)
+# ==============================================================================
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # macOS Homebrew Initialization
+  if [ -f "/opt/homebrew/bin/brew" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -f "/usr/local/bin/brew" ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+  os_plugins=(brew macos)
+  alias xdg-open='open'
+else
+  os_plugins=(archlinux)
+fi
+
+# Custom completions in fpath (must be added before OMZ compinit)
+if [ -d "$HOME/.grok/completions/zsh" ]; then
+  fpath=("$HOME/.grok/completions/zsh" $fpath)
+fi
+
+# Standard & Custom Plugins
+plugins=(
+  git
+  sudo
+  extract
+  docker
+  docker-compose
+  copypath
+  copyfile
+  you-should-use
+  $os_plugins
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  zsh-completions
+  zsh-history-substring-search
+)
+
+# Load Oh My Zsh
+source "$ZSH/oh-my-zsh.sh"
+
+# ==============================================================================
+# Environment & PATH
+# ==============================================================================
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+if command -v bat >/dev/null 2>&1; then
+  export MANPAGER="bat -l man -p"
+elif command -v batcat >/dev/null 2>&1; then
+  export MANPAGER="batcat -l man -p"
+fi
+
+export GPG_TTY=$(tty)
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export RUBYOPT="-rresolv-replace"
+
+# Path additions
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/share/gem/ruby/3.4.0/bin:$PATH"
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+export PATH="$HOME/.grok/bin:$PATH"
+
+# ==============================================================================
+# History & Shell Behavior
+# ==============================================================================
+HISTSIZE=100000
+SAVEHIST=100000
+setopt APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_FIND_NO_DUPS
+
+setopt AUTOCD
+setopt NOBEEP
+setopt NUMERIC_GLOB_SORT
+
+# ==============================================================================
+# Tools Integration (Mise, Zoxide, FZF, GCloud, Bun)
+# ==============================================================================
+
+# Mise
+if [ -f "$HOME/.local/bin/mise" ]; then
+  eval "$("$HOME/.local/bin/mise" activate zsh)"
+  source <("$HOME/.local/bin/mise" completion zsh 2>/dev/null)
+elif command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+  source <(mise completion zsh 2>/dev/null)
+fi
+
+# Zoxide
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
+
+# Google Cloud SDK
+[ -f "$HOME/google-cloud-sdk/path.zsh.inc" ] && . "$HOME/google-cloud-sdk/path.zsh.inc"
+[ -f "$HOME/google-cloud-sdk/completion.zsh.inc" ] && . "$HOME/google-cloud-sdk/completion.zsh.inc"
+
+# Bun completions
+[ -s "$HOME/.local/share/reflex/bun/_bun" ] && source "$HOME/.local/share/reflex/bun/_bun"
+
+# FZF Keybindings & Completion (Auto-detect Arch Linux vs macOS Homebrew)
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  if [ -n "$HOMEBREW_PREFIX" ] && [ -d "$HOMEBREW_PREFIX/opt/fzf" ]; then
+    [ -f "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh" ] && source "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
+    [ -f "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh" ] && source "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh"
+  elif [ -f "$HOME/.fzf.zsh" ]; then
+    source "$HOME/.fzf.zsh"
+  fi
+else
+  if [ -f "/usr/share/fzf/key-bindings.zsh" ]; then
+    source /usr/share/fzf/key-bindings.zsh
+    source /usr/share/fzf/completion.zsh
+  elif [ -f "$HOME/.fzf.zsh" ]; then
+    source "$HOME/.fzf.zsh"
+  fi
+fi
+
+# FZF Configuration
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --strip-cwd-prefix'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_DEFAULT_OPTS='
+  --height=60%
+  --layout=reverse
+  --border=rounded
+  --prompt="  "
+  --pointer="  "
+  --preview-window=right:65%:wrap:border-left
+'
+export _FZF_PREVIEW_CMD='bat --color=always --style=plain,numbers --line-range=:500 {}'
+export FZF_CTRL_T_OPTS="--preview '$_FZF_PREVIEW_CMD'"
+
+_fzf_file_no_hidden() {
+  local cmd result
+  cmd="${FZF_DEFAULT_COMMAND/--hidden /}"
+  result=$(eval "${cmd:-find . -type f}" | fzf --preview "$_FZF_PREVIEW_CMD") \
+    && LBUFFER+="$result"
+  zle reset-prompt
+}
+zle -N _fzf_file_no_hidden
+
+# ==============================================================================
+# Keybindings & Interactive Helpers
+# ==============================================================================
+# Disable XON/XOFF flow control to free Ctrl+S for shell widgets
+stty -ixon 2>/dev/null || true
+export KEYTIMEOUT=15
+
+# Enhanced Sudo toggle:
+# - If line is empty: inserts "sudo " ready to type a new command
+# - If only "sudo " is typed: clears the line
+# - If command is already typed: toggles sudo on/off
+sudo-command-line() {
+  if [[ -z "$BUFFER" ]]; then
+    LBUFFER="sudo "
+    return
+  fi
+  if [[ "$BUFFER" == "sudo " || "$BUFFER" == "sudo" ]]; then
+    BUFFER=""
+    CURSOR=0
+    return
+  fi
+  case "$BUFFER" in
+    sudo\ *) BUFFER="${BUFFER#sudo }" ;;
+    *) BUFFER="sudo $BUFFER" ;;
+  esac
+  CURSOR=${#BUFFER}
+}
+zle -N sudo-command-line
+
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;5D' backward-word
+bindkey '^F' _fzf_file_no_hidden
+bindkey -M emacs '^S' sudo-command-line
+bindkey -M viins '^S' sudo-command-line
+bindkey -M vicmd '^S' sudo-command-line
+bindkey '^S' sudo-command-line
+bindkey '^[s' sudo-command-line
+bindkey '^[S' sudo-command-line
+bindkey '^[a' autosuggest-toggle
+bindkey '^[A' autosuggest-toggle
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# ==============================================================================
+# Aliases
+# ==============================================================================
+
+# Modern CLI Replacements
+alias ls='eza --icons'
+alias ll='eza -lh --icons --git'
+alias la='eza -lah --icons --git'
+alias tree='eza --tree --icons'
+compdef eza=ls 2>/dev/null || true
+
+alias cat='bat --style=auto --paging=never'
+alias cata='bat --style=auto --paging=always'
+alias catl='bat --style=plain'
+alias catn='bat --style=numbers'
+
+alias grep='rg --color=auto'
+alias diff='diff --color=auto'
+alias df='df -h'
+alias find='fd --hidden --exclude .git'
+
+# Navigation
+alias -- -='cd -'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias zz='zi'
+
+# Editors & Tools
+alias vim='nvim'
+alias vi='nvim'
+alias v='nvim'
+alias lg='lazygit'
+alias lzg='lazygit'
+alias cs='cursor'
+alias cu='cursor'
+alias code='cursor'
+alias o='xdg-open'
+
+# Git extras
+alias glog='PAGER="less -F -X" git log'
+alias gadog='PAGER="less -F -X" git log --all --decorate --oneline --graph'
+alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+alias gin='git init'
+alias grao='git remote add origin'
+alias gswp='git switch -'
+alias gcoma='git commit --amend'
+alias gcomane='git commit --amend --no-edit'
+alias gundo='git reset --soft HEAD~1'
+alias gundosoft='git reset HEAD~1'
+alias gprune='git fetch --prune && git branch -vv | grep ": gone]" | awk "{print \$1}" | xargs -r git branch -D'
+
+# ==============================================================================
+# Power Navigation & Search Helpers
+# ==============================================================================
+
+# File picker with preview
+f() {
+  fd --type f --hidden --exclude .git | fzf --preview 'bat --color=always {}'
+}
+
+# Fuzzy find and open in nvim
+fv() {
+  local file
+  file=$(fd --type f --hidden --exclude .git | fzf --preview 'bat --color=always {}')
+  [ -n "$file" ] && nvim "$file"
+}
+
+# Fuzzy find and open with default system app
+fo() {
+  local file
+  file=$(fd --type f --hidden --exclude .git | fzf --preview 'bat --color=always {}')
+  if [ -n "$file" ]; then
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      open "$file" >/dev/null 2>&1
+    else
+      xdg-open "$file" >/dev/null 2>&1
+    fi
+  fi
+}
+
+# Fuzzy find and print content with bat
+fcat() {
+  local file
+  file=$(fd --type f --hidden --exclude .git | fzf --preview 'bat --color=always {}')
+  [ -n "$file" ] && bat "$file"
+}
+
+# Content search inside files with fzf preview
+rgf() {
+  local file
+  file=$(rg --hidden --files-with-matches "$1" | fzf --preview 'bat --color=always {}')
+  [ -n "$file" ] && nvim "$file"
+}
+
+# Search all files (including gitignored) with fzf preview
+rgfa() {
+  local file
+  file=$(rg --hidden --no-ignore --files-with-matches "$1" | fzf --preview 'bat --color=always {}')
+  [ -n "$file" ] && nvim "$file"
+}
+
+# Jump to directory with zoxide and open nvim
+zd() {
+  local dir
+  dir=$(zoxide query -l | fzf --height 40%)
+  [ -n "$dir" ] && nvim "$dir"
+}
+
+# Directory navigation helper with lf
+lf() {
+  local tmp dir
+  tmp=$(mktemp)
+  command lf -last-dir-path="$tmp" "$@"
+  if [ -f "$tmp" ]; then
+    dir=$(cat "$tmp")
+    rm -f "$tmp"
+    [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+  fi
+}
+
+# ==============================================================================
+# Starship Prompt
+# ==============================================================================
+export STARSHIP_CONFIG="$HOME/.config/starship.toml"
+eval "$(starship init zsh)"
