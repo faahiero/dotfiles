@@ -1,6 +1,7 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 add_newline = false
+command_timeout = 1000
 
 format = """
 $os\
@@ -16,6 +17,7 @@ $python\
 $nodejs\
 $ruby\
 $golang\
+$swift\
 $cmd_duration\
 $time"""
 
@@ -87,6 +89,13 @@ style = "bold cyan"
 format = "via [$symbol($version )]($style)"
 detect_extensions = []
 detect_files = ["go.mod", "go.sum", ".go-version"]
+
+[swift]
+symbol = "󰛥 "
+style = "bold 202"
+format = "via [$symbol($version )]($style)"
+detect_extensions = ["swift"]
+detect_files = ["Package.swift"]
 
 [cmd_duration]
 min_time = 500
