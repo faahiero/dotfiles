@@ -71,6 +71,7 @@ Guia definitivo com **todos** os atalhos de teclado, aliases manuais, comandos d
 
 | Alias | Comando Real | Descrição |
 | :--- | :--- | :--- |
+| `sudo ` | `sudo ` | Habilita expansão de aliases com sudo (ex: `sudo v <arq>` vira `sudo nvim <arq>`) |
 | `ls` | `eza --icons` | Listagem moderna de arquivos com ícones |
 | `ll` | `eza -lh --icons --git` | Listagem detalhada com permissões, tamanho e status do Git |
 | `la` | `eza -lah --icons --git` | Listagem completa incluindo todos os arquivos ocultos |

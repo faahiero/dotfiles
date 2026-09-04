@@ -213,6 +213,9 @@ bindkey '^[[B' history-substring-search-down
 # Aliases
 # ==============================================================================
 
+# Enable alias expansion after sudo (e.g. sudo v /etc/hosts -> sudo nvim /etc/hosts)
+alias sudo='sudo '
+
 # Modern CLI Replacements
 alias ls='eza --icons'
 alias ll='eza -lh --icons --git'
