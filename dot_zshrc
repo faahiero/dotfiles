@@ -173,10 +173,13 @@ zle -N _fzf_file_no_hidden
 stty -ixon 2>/dev/null || true
 export KEYTIMEOUT=15
 
-# Enhanced Sudo toggle:
+# Smart Sudo & Sudoedit toggle:
 # - If line is empty: inserts "sudo " ready to type a new command
-# - If only "sudo " is typed: clears the line
-# - If command is already typed: toggles sudo on/off
+# - If line is just "sudo " or "sudo": clears the line
+# - If command is an editor (v, vi, vim, nvim, nano): toggles "sudo -e <file>" <-> "v <file>"
+# - If command is already "sudo -e <file>": toggles back to "v <file>"
+# - If command is standard "sudo <cmd>": removes "sudo "
+# - Otherwise: prepends "sudo "
 sudo-command-line() {
   if [[ -z "$BUFFER" ]]; then
     LBUFFER="sudo "
@@ -187,9 +190,24 @@ sudo-command-line() {
     CURSOR=0
     return
   fi
-  case "$BUFFER" in
-    sudo\ *) BUFFER="${BUFFER#sudo }" ;;
-    *) BUFFER="sudo $BUFFER" ;;
+  if [[ "$BUFFER" == sudo\ -e\ * ]]; then
+    BUFFER="v ${BUFFER#sudo -e }"
+    CURSOR=${#BUFFER}
+    return
+  fi
+  if [[ "$BUFFER" == sudo\ * ]]; then
+    BUFFER="${BUFFER#sudo }"
+    CURSOR=${#BUFFER}
+    return
+  fi
+  local first_word="${${(Az)BUFFER}[1]}"
+  case "$first_word" in
+    v|vi|vim|nvim|nano)
+      BUFFER="sudo -e ${BUFFER#$first_word }"
+      ;;
+    *)
+      BUFFER="sudo $BUFFER"
+      ;;
   esac
   CURSOR=${#BUFFER}
 }
@@ -215,6 +233,7 @@ bindkey '^[[B' history-substring-search-down
 
 # Enable alias expansion after sudo (e.g. sudo v /etc/hosts -> sudo nvim /etc/hosts)
 alias sudo='sudo '
+alias sv='sudo -e'
 
 # Modern CLI Replacements
 alias ls='eza --icons'

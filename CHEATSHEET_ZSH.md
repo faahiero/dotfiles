@@ -22,7 +22,7 @@ Guia definitivo com **todos** os atalhos de teclado, aliases manuais, comandos d
 
 | Atalho | Plugin / Recurso | Ação |
 | :--- | :--- | :--- |
-| <kbd>Ctrl</kbd> + <kbd>S</kbd> *(ou <kbd>Alt</kbd>+<kbd>s</kbd>)* | **`sudo`** | Insere `sudo ` na linha vazia, ou alterna `sudo` no comando digitado |
+| <kbd>Ctrl</kbd> + <kbd>S</kbd> *(ou <kbd>Alt</kbd>+<kbd>s</kbd>)* | **`sudo` Inteligente** | Insere `sudo `; alterna `sudo -e` em editores (`v`/`nvim`) e `sudo` nos demais |
 | <kbd>Ctrl</kbd> + <kbd>F</kbd> | **FZF Custom** | Abre o FZF e insere o caminho do arquivo selecionado na linha de comando |
 | <kbd>Ctrl</kbd> + <kbd>R</kbd> | **FZF** | Busca interativa no histórico de comandos com preview |
 | <kbd>Ctrl</kbd> + <kbd>T</kbd> | **FZF** | Localiza qualquer arquivo recursivamente e cola na posição do cursor |
@@ -72,6 +72,7 @@ Guia definitivo com **todos** os atalhos de teclado, aliases manuais, comandos d
 | Alias | Comando Real | Descrição |
 | :--- | :--- | :--- |
 | `sudo ` | `sudo ` | Habilita expansão de aliases com sudo (ex: `sudo v <arq>` vira `sudo nvim <arq>`) |
+| `sv <arq>` | `sudo -e <arq>` | Edita arquivos protegidos usando seu AstroNvim completo com segurança |
 | `ls` | `eza --icons` | Listagem moderna de arquivos com ícones |
 | `ll` | `eza -lh --icons --git` | Listagem detalhada com permissões, tamanho e status do Git |
 | `la` | `eza -lah --icons --git` | Listagem completa incluindo todos os arquivos ocultos |
