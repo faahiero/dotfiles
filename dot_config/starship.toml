@@ -18,6 +18,7 @@ $nodejs\
 $ruby\
 $golang\
 $swift\
+$custom\
 $dotnet\
 $cmd_duration\
 $time"""
@@ -90,6 +91,12 @@ symbol = "󰛥 "
 format = "via [$symbol](bold #F05138)[($version )](bold white)"
 detect_extensions = ["swift"]
 detect_files = ["Package.swift"]
+
+[custom.xcode]
+when = "! ls *.swift >/dev/null 2>&1 && ! test -f Package.swift && (ls -d *.xcodeproj >/dev/null 2>&1 || ls -d *.xcworkspace >/dev/null 2>&1)"
+command = "swift --version | awk '/Swift version/ {for(i=1;i<=NF;i++) if($i==\"version\") print $(i+1)}'"
+symbol = "󰛥 "
+format = "via [$symbol](bold #F05138)[(v$output )](bold white)"
 
 [dotnet]
 symbol = " "
